@@ -9,7 +9,7 @@ class HomeScreen : Screen {
     @Composable
     override fun Content() {
         LaunchedEffect(Unit){
-            CurrencyApiServiceImpl().getLatestExchangeRates()
+          //  CurrencyApiServiceImpl().getLatestExchangeRates()
         }
     }
 }
