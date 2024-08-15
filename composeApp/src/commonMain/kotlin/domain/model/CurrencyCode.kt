@@ -6,7 +6,7 @@ import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 @OptIn(ExperimentalResourceApi::class)
-enum class CurrenyCode (val country:String,
+enum class CurrencyCode (val country:String,
     val flag:DrawableResource) {
     AED(country = "United Arab Emirates", flag = Res.drawable.united_arab_emirates),
     AFN(country = "Afghanistan", flag = Res.drawable.afghanistan),

@@ -4,7 +4,7 @@ import domain.CurrencyApiService
 import domain.PreferenceRepository
 import domain.model.ApiResponse
 import domain.model.Currency
-import domain.model.CurrenyCode
+import domain.model.CurrencyCode
 import domain.model.RequestState
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -49,12 +49,12 @@ class CurrencyApiServiceImpl(
                 println("getLatestExchangeRates response: ${response.body<String>()}")
                 val apiResponse = Json.decodeFromString<ApiResponse>(response.body())
 
-                val availableCurrenyCodes = apiResponse.data.keys.filter {
-                    CurrenyCode.entries.map{ code -> code.name}.toSet().contains(it)
+                val availableCurrencyCodes = apiResponse.data.keys.filter {
+                    CurrencyCode.entries.map{ code -> code.name}.toSet().contains(it)
                 }
 
                 val availableCurrencies = apiResponse.data.values.filter {  currency ->
-                    availableCurrenyCodes.contains(currency.code)
+                    availableCurrencyCodes.contains(currency.code)
                 }
 
                 val lastUpdated = apiResponse.meta.lastUpdatedAt
