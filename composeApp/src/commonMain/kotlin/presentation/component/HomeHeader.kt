@@ -75,10 +75,8 @@ fun HomeHeader(
             onSwitchClick = onSwitchClick)
         Spacer(modifier = Modifier.height(24.dp))
         AmountInput(
-            amount = 1.0,
-            onAmountChange = {
-                onAmountChange(it)
-            })
+            amount = amount,
+            onAmountChange = onAmountChange )
     }
 }
 
