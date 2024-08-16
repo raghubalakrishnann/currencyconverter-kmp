@@ -40,6 +40,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import domain.model.Currency
 import domain.model.CurrencyCode
+import domain.model.DisplayResult
 import domain.model.RateStatus
 import domain.model.RequestState
 import kotlinproject.composeapp.generated.resources.Res
@@ -220,21 +221,23 @@ fun RowScope.CurrencyView(
                 .align(Alignment.CenterHorizontally),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween){
-            if(currency.isSuccess()){
-                Icon(
-                    modifier = Modifier.size(24.dp),
-                    painter = painterResource(CurrencyCode.valueOf(currency.getSuccessData().code).flag),
-                    contentDescription = "Country Flag",
-                    tint = Color.Unspecified
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = CurrencyCode.valueOf(currency.getSuccessData().code).name,
-                    style = MaterialTheme.typography.titleLarge,
-                    fontSize = MaterialTheme.typography.titleLarge.fontSize,
-                    color = Color.White)
 
-            }
+            currency.DisplayResult(
+                onSuccess = { data ->
+                    Icon(
+                        modifier = Modifier.size(24.dp),
+                        painter = painterResource(CurrencyCode.valueOf(data.code).flag),
+                        contentDescription = "Country Flag",
+                        tint = Color.Unspecified
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = CurrencyCode.valueOf(data.code).name,
+                        style = MaterialTheme.typography.titleLarge,
+                        fontSize = MaterialTheme.typography.titleLarge.fontSize,
+                        color = Color.White)
+                }
+            )
 
         }
     }
