@@ -40,7 +40,7 @@ class HomeScreen : Screen {
                 },
                 onSwitchClick = {
                     viewModel.sendEvent(
-                        HomeUIEvent.RefreshRates
+                        HomeUIEvent.SwitchCurrency
                     )
                 },
                 onRatesRefresh = {
