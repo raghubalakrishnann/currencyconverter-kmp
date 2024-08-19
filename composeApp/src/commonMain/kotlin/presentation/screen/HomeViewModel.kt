@@ -21,6 +21,8 @@ import kotlinx.datetime.Clock
 sealed class HomeUIEvent {
     data object RefreshRates : HomeUIEvent()
     data object SwitchCurrency : HomeUIEvent()
+    data class SaveSourceCurrencyCode(val code: String) : HomeUIEvent()
+    data class SaveTargetCurrencyCode(val code: String) : HomeUIEvent()
 }
 class HomeViewModel (
     private val preferences : PreferenceRepository,
@@ -62,6 +64,17 @@ class HomeViewModel (
                     switchCurrency()
                 }
             }
+
+            is HomeUIEvent.SaveSourceCurrencyCode -> {
+                screenModelScope.launch {
+                    preferences.saveSourceCurrencyCode(event.code)
+                }
+            }
+            is HomeUIEvent.SaveTargetCurrencyCode -> {
+                screenModelScope.launch {
+                    preferences.saveTargetCurrencyCode(event.code)
+                }
+            }
         }
     }
 
@@ -85,6 +98,8 @@ class HomeViewModel (
                 val selectedCurrency = _allCurrencies.find { it.code == currencyCode.name }
                 if (selectedCurrency != null) {
                     _targetCurrency.value = RequestState.Success(selectedCurrency)
+                }else{
+                    _targetCurrency.value = RequestState.Error(error = "Currency not found")
                 }
             }
         }
@@ -96,6 +111,7 @@ class HomeViewModel (
             if(localCache.isSuccess()){
                 if(localCache.getSuccessData().isNotEmpty()){
                     println("fetchNewRates localCache: $localCache")
+                    _allCurrencies.clear()
                     _allCurrencies.addAll(localCache.getSuccessData())
                     if(!preferences.isDataFresh(Clock.System.now().toEpochMilliseconds())){
                         println("HomeViewModel DATA NOT FRESH")
@@ -113,7 +129,7 @@ class HomeViewModel (
             }
             getRateStatus()
         }catch (e:Exception){
-            println()
+            println(e.message)
         }
     }
 
@@ -126,9 +142,10 @@ class HomeViewModel (
                 println("HomeViewModel adding code :${it.code} value:${it.value}")
                 mongoDB.insertCurrencyData(it)
             }
+            _allCurrencies.clear()
             _allCurrencies.addAll(fetchedData.getSuccessData())
         }else if(fetchedData.isError()) {
-            println("HomeViewModel fetch failed")
+            println("HomeViewModel: FETCHING FAILED ${fetchedData.getErrorMessage()}")
         }
 
     }

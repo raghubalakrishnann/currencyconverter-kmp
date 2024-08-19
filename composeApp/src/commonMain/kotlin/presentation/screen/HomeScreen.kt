@@ -32,17 +32,34 @@ class HomeScreen : Screen {
         var selectedCurrencyCode :CurrencyType by remember {
             mutableStateOf(CurrencyType.None)
         }
-        var dialogOpened by remember { mutableStateOf(true) }
+        var dialogOpened by remember { mutableStateOf(false) }
 
-        if(dialogOpened){
+        if(dialogOpened && selectedCurrencyCode != CurrencyType.None){
+
+            println("getLatestExchangeRates CurrencyPickerDialog 11 currencies: ${allCurrencies.size}")
+            allCurrencies.forEach {
+                println("getLatestExchangeRates CurrencyPickerDialog 12 code: ${it.code}")
+            }
+
             CurrencyPickerDialog(
                 currencies = allCurrencies,
                 currencyType = selectedCurrencyCode,
-                onPositiveClick = {
+                onConfirmClick = { currencyCode ->
+                    if(selectedCurrencyCode is CurrencyType.Source){
+                        viewModel.sendEvent(
+                            HomeUIEvent.SaveSourceCurrencyCode(code = currencyCode.name)
+                        )
+                    }else if(selectedCurrencyCode is CurrencyType.Target){
+                        viewModel.sendEvent(
+                            HomeUIEvent.SaveTargetCurrencyCode(code = currencyCode.name)
+                        )
+                    }
+                    selectedCurrencyCode = CurrencyType.None
                     dialogOpened = false
                 },
                 onDismiss = {
-                  dialogOpened = false
+                    selectedCurrencyCode = CurrencyType.None
+                    dialogOpened = false
                 })
         }
 
@@ -68,6 +85,11 @@ class HomeScreen : Screen {
                     viewModel.sendEvent(
                         HomeUIEvent.RefreshRates
                     )
+                },
+                onCurrencyTypeSelect = { currencyType ->
+                    selectedCurrencyCode = currencyType
+                    dialogOpened = true
+
                 })
         }
     }

@@ -10,7 +10,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -31,20 +30,19 @@ import androidx.compose.ui.unit.dp
 import domain.model.Currency
 import domain.model.CurrencyCode
 import domain.model.CurrencyType
+import ui.theme.primaryColor
 import ui.theme.surfaceColor
 import ui.theme.textColor
 
-
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CurrencyPickerDialog(
     currencies: List<Currency>,
     currencyType: CurrencyType,
-    onPositiveClick: (CurrencyCode) -> Unit,
+    onConfirmClick: (CurrencyCode) -> Unit,
     onDismiss: () -> Unit
 ) {
-    val allCurrencies = remember {
+
+    val allCurrencies = remember(key1 = currencies) {
         mutableStateListOf<Currency>().apply { addAll(currencies) }
     }
 
@@ -56,7 +54,6 @@ fun CurrencyPickerDialog(
 
     AlertDialog(
         containerColor = surfaceColor,
-        onDismissRequest = onDismiss,
         title = {
             Text(
                 text = "Select a currency",
@@ -65,23 +62,25 @@ fun CurrencyPickerDialog(
         },
         text = {
             Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally) {
-
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 TextField(
-                    modifier = Modifier.fillMaxWidth()
-                        .clip(RoundedCornerShape(99.dp)),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(size = 99.dp)),
                     value = searchQuery,
                     onValueChange = { query ->
                         searchQuery = query.uppercase()
 
-                        if(query.isNotEmpty()){
+                        if (query.isNotEmpty()) {
                             val filteredCurrencies = allCurrencies.filter {
-                                it.code.contains(query, ignoreCase = true)
+                                it.code.contains(query.uppercase())
                             }
                             allCurrencies.clear()
                             allCurrencies.addAll(filteredCurrencies)
-                        }else{
+                        } else {
                             allCurrencies.clear()
                             allCurrencies.addAll(currencies)
                         }
@@ -104,44 +103,42 @@ fun CurrencyPickerDialog(
                         disabledContainerColor = textColor.copy(alpha = 0.1f),
                         errorContainerColor = textColor.copy(alpha = 0.1f),
                         focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
                         disabledIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
                         cursorColor = textColor,
-                        )
+                    )
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))
 
                 AnimatedContent(
-                    targetState = allCurrencies,
-                    ){ availableCurrencies ->
-                    if(availableCurrencies.isNotEmpty()){
-                       LazyColumn(
-                           modifier = Modifier.fillMaxWidth()
-                           .height(250.dp),
-                           verticalArrangement = Arrangement.spacedBy(8.dp),
-                       ) {
-                          this.items(
-                              items = availableCurrencies,
-                              key = { it._id.toHexString() }
-                          ){ currency ->
-                              CurrencyCodePickerView(
-                                  code = CurrencyCode.valueOf(currency.code),
-                                  isSelected = selectedCurrencyCode.name == currency.code,
-                                  onSelect = { code ->
-                                      selectedCurrencyCode = code
-                                  }
-                              )
-                          }
-
-                       }
-                    }else{
+                    targetState = allCurrencies
+                ) { availableCurrencies ->
+                    if (availableCurrencies.isNotEmpty()) {
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(250.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            items(
+                                items = availableCurrencies,
+                                key = { it._id.toHexString() }
+                            ) {currency ->
+                                CurrencyCodePickerView(
+                                    code = CurrencyCode.valueOf(currency.code),
+                                    isSelected = selectedCurrencyCode.name == currency.code,
+                                    onSelect = { selectedCurrencyCode = it }
+                                )
+                            }
+                        }
+                    } else {
                         ErrorScreen(modifier = Modifier.height(250.dp))
                     }
-
                 }
             }
         },
+        onDismissRequest = onDismiss,
         dismissButton = {
             TextButton(onClick = onDismiss) {
                 Text(
@@ -149,24 +146,14 @@ fun CurrencyPickerDialog(
                     color = MaterialTheme.colorScheme.outline
                 )
             }
-
         },
         confirmButton = {
-            TextButton(onClick = {
-                onPositiveClick(selectedCurrencyCode)
-            }) {
+            TextButton(onClick = { onConfirmClick(selectedCurrencyCode) }) {
                 Text(
                     text = "Confirm",
-                    color = MaterialTheme.colorScheme.outline
+                    color = primaryColor
                 )
             }
         }
-
     )
-
-}
-
-@Composable
-fun AlertDialogContent() {
-
 }
