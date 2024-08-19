@@ -44,6 +44,7 @@ import domain.model.CurrencyType
 import domain.model.DisplayResult
 import domain.model.RateStatus
 import domain.model.RequestState
+import getPlatform
 import kotlinproject.composeapp.generated.resources.Res
 import kotlinproject.composeapp.generated.resources.exchange_illustration
 import kotlinproject.composeapp.generated.resources.refresh_ic
@@ -69,6 +70,7 @@ fun HomeHeader(
         modifier = Modifier.fillMaxWidth()
             .clip(RoundedCornerShape(bottomStart = 12.dp, bottomEnd = 12.dp))
             .background(headerColor)
+            .padding(top= if(getPlatform().name == "Android") 0.dp else 24.dp)
             .padding(all = 24.dp)
     )
     {

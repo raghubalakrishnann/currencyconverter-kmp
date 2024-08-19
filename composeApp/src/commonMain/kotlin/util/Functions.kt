@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontFamily
 import kotlinproject.composeapp.generated.resources.Res
 import kotlinproject.composeapp.generated.resources.bebas_nue_regular
+import kotlinproject.composeapp.generated.resources.poppins
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -46,3 +47,7 @@ fun displayCurrentDateTime(): String {
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun GetBebasFontFamily() = FontFamily(Font(Res.font.bebas_nue_regular))
+
+@OptIn(ExperimentalResourceApi::class)
+@Composable
+fun GetPoppinsFontFamily() = FontFamily(Font(Res.font.poppins))

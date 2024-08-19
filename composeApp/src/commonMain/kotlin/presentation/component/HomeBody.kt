@@ -32,6 +32,7 @@ import domain.model.RequestState
 import ui.theme.headerColor
 import util.DoubleConverter
 import util.GetBebasFontFamily
+import util.GetPoppinsFontFamily
 import util.calculateExchangeRate
 import util.convert
 
@@ -57,12 +58,11 @@ fun HomeBody(
     ) {
         Column(modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.Center){
+            //                fontFamily = GetBebasFontFamily(),
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 text = "${(animatedExchangedAmount *100).toLong()/100.0}",
                 fontSize = 60.sp,
-                fontFamily = GetBebasFontFamily(),
-                fontWeight = FontWeight.Bold,
                 color = if(isSystemInDarkTheme()) Color.White else Color.Black,
                 textAlign = TextAlign.Center
             )
