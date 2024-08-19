@@ -1,8 +1,23 @@
 package util
 
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.text.font.FontFamily
+import kotlinproject.composeapp.generated.resources.Res
+import kotlinproject.composeapp.generated.resources.bebas_nue_regular
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.Font
+
+
+fun calculateExchangeRate(source: Double, target: Double): Double {
+    return target / source
+}
+
+fun convert(amount: Double, exchangeRate: Double): Double {
+    return amount * exchangeRate
+}
 
 fun displayCurrentDateTime(): String {
     val currentTimestamp = Clock.System.now()
@@ -27,3 +42,7 @@ fun displayCurrentDateTime(): String {
     // Format the date in the desired representation
     return "$dayOfMonth$suffix $month, $year."
 }
+
+@OptIn(ExperimentalResourceApi::class)
+@Composable
+fun GetBebasFontFamily() = FontFamily(Font(Res.font.bebas_nue_regular))
